@@ -6,16 +6,31 @@ class VirtualDisk:
         self.size = size  # Disk size in bytes
         self.disk_file = "virtual_disk.bin"
         self.metadata_file = "metadata.pkl"
+        self.users_file = "users.pkl"
         self.partitions = {}  # {partition_name: (start_offset, size)}
         self.file_allocation_table = {}  # {partition_name: directory tree}
+        self.partion_users = {} # {partion name: (user, password)}
 
         # Load metadata if available
         self.load_metadata()
+        self.load_users()
 
         # Initialize the virtual disk file
         if not os.path.exists(self.disk_file):
             with open(self.disk_file, "wb") as f:
                 f.write(b"\x00" * self.size)
+
+    def save_users(self):
+        with open(self.users_file, "wb") as f:
+            pickle.dump(self.partion_users, f)
+    
+    def load_users(self):
+        if os.path.exists(self.users_file):
+            with open(self.users_file, "rb") as f:
+                self.partion_users = pickle.load(f)
+        else:
+            self.partion_users = {}
+
 
     def save_metadata(self):
         """Save partitions and file allocation table to disk."""
@@ -55,6 +70,29 @@ class VirtualDisk:
         if partition_name not in self.partitions:
             print(f"Error: Partition '{partition_name}' does not exist.")
             return
+
+        while True:
+            print("1. Log into this partion")
+            print("2. Create user for this partition")
+            print("3. Exit")
+            choice = input("Choose your action: ")
+            if choice == "1":
+                if self.log_in_user(partition_name)[0]:
+                    print("Successfully logged in")
+                    break
+                else: print("Wrong username or password")
+            elif choice == "2":
+                if self.create_user(partition_name):
+                    print("User created succesfully")
+                    break
+                else: print("Too many users")
+        
+            elif choice == "3":
+                print("Exiting...")
+                return
+            else:
+                print("Invalid choice. Please try again.")
+
 
         print(f"Entering partition '{partition_name}'...")
         current_dir = self.file_allocation_table[partition_name]["/"]
@@ -231,6 +269,22 @@ class VirtualDisk:
             content = f.read(file_size)
 
         return content.decode()
+    
+    def create_user(self, partion_name):
+        if partion_name in self.partion_users:
+            return False
+        username = input("Enter username: ")
+        password = input("Create password: ")
+        self.partion_users[partion_name] = (username, password)
+        self.save_users()
+        return True
+    
+    def log_in_user(self, partion_name):
+        username = input("Enter username: ")
+        password = input("Enter password: ")
+        if username != self.partion_users[partion_name][0] and password != self.partion_users[partion_name][1]:
+            return False, "Wrong user or password"
+        return True, f"User {username} logged in successfully"
 
 # Main Program
 def main():
