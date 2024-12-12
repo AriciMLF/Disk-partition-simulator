@@ -24,15 +24,17 @@ The system maintains accurate metadata for file size and location.
 Persistence:
 
 All partition and file metadata are saved to disk, ensuring no data is lost when the program is restarted.
-Planned Features
-Encryption:
+
+!Update! User Management:
+
+Added user accounts for partitions to control access and permissions.
+Support multi-user functionality with authentication.
+Planned Features:
+1.Encryption:
 
 Implement encryption for files and directories to secure data stored in the virtual disk.
 Enable decryption when accessing files with appropriate permissions.
-User Management:
 
-Add user accounts for partitions to control access and permissions.
-Support multi-user functionality with authentication.
 Potential Use Cases
 Educational Tool: Learn about file systems, directory structures, and partitioning in a simulated environment.
 Programming Practice: Experiment with concepts like metadata management, file operations, and Unix-like commands.
