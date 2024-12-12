@@ -1,5 +1,4 @@
-Project Description: Disk Partition Simulator
-Overview
+Project Description: 
 The Disk Partition Simulator is a Python-based project that mimics the functionality of a disk partitioning system. It allows users to create and manage virtual disk partitions, navigate directories, and perform file operations using a Unix-like interface. The project provides a robust structure for interacting with a simulated disk, supporting file creation, editing, and retrieval while persisting data across sessions.
 
 Features
